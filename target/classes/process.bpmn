@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+  <bpmn:process id="subscription-process" name="Test Service Task" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent" targetRef="providerApproval" />
+    <bpmn:userTask id="providerApproval" name="Provider Approval" camunda:assignee="demo">
+      <bpmn:incoming>Flow_1v2g82c</bpmn:incoming>
+      <bpmn:outgoing>Flow_0uw0vxy</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="decision" name="Approved?">
+      <bpmn:incoming>Flow_0uw0vxy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lehpok</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1trl4o0</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="activateTask" name="Activate Subscription" camunda:class="com.example.testproject.delegate.ActivateSubscriptionTask">
+      <bpmn:incoming>Flow_0lehpok</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tmt7wd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0lehpok" sourceRef="decision" targetRef="activateTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approved == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0uw0vxy" sourceRef="providerApproval" targetRef="decision" />
+    <bpmn:startEvent id="StartEvent" name="Start Event">
+      <bpmn:outgoing>Flow_1v2g82c</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1v2g82c" sourceRef="StartEvent" targetRef="providerApproval" />
+    <bpmn:endEvent id="approvedEnd" name="Subscribed">
+      <bpmn:incoming>Flow_1tmt7wd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="rejectedEnd" name="Rejected">
+      <bpmn:incoming>Flow_1trl4o0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1trl4o0" sourceRef="decision" targetRef="rejectedEnd">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approved == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1tmt7wd" sourceRef="activateTask" targetRef="approvedEnd">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approved == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="subscription-process">
+      <bpmndi:BPMNEdge id="Flow_1v2g82c_di" bpmnElement="Flow_1v2g82c">
+        <di:waypoint x="198" y="117" />
+        <di:waypoint x="260" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uw0vxy_di" bpmnElement="Flow_0uw0vxy">
+        <di:waypoint x="360" y="117" />
+        <di:waypoint x="405" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lehpok_di" bpmnElement="Flow_0lehpok">
+        <di:waypoint x="455" y="117" />
+        <di:waypoint x="503" y="117" />
+        <di:waypoint x="503" y="90" />
+        <di:waypoint x="550" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1trl4o0_di" bpmnElement="Flow_1trl4o0">
+        <di:waypoint x="430" y="142" />
+        <di:waypoint x="430" y="230" />
+        <di:waypoint x="802" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tmt7wd_di" bpmnElement="Flow_1tmt7wd">
+        <di:waypoint x="650" y="90" />
+        <di:waypoint x="892" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_00aov0q_di" bpmnElement="providerApproval">
+        <dc:Bounds x="260" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ddrvdy_di" bpmnElement="decision" isMarkerVisible="true">
+        <dc:Bounds x="405" y="92" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="403" y="68" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cbey46_di" bpmnElement="activateTask">
+        <dc:Bounds x="550" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qao5rf_di" bpmnElement="StartEvent">
+        <dc:Bounds x="162" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="153" y="142" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11qlm0p_di" bpmnElement="approvedEnd">
+        <dc:Bounds x="892" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="882" y="115" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0p4shfl_di" bpmnElement="rejectedEnd">
+        <dc:Bounds x="802" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="798" y="255" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

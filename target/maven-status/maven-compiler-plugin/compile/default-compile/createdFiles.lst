@@ -1,0 +1,8 @@
+com\example\testproject\Controller\SubscriptionController.class
+com\example\testproject\MyServiceTask.class
+com\example\testproject\delegate\ActivateSubscriptionTask.class
+com\example\testproject\service\SubscriptionService.class
+com\example\testproject\repository\SubscriptionRepository.class
+com\example\testproject\Application.class
+com\example\testproject\entity\Subscription.class
+com\example\testproject\ProcessStarterController.class
